@@ -16,23 +16,19 @@ public:
     PcapFacade();
     ~PcapFacade();
 
-    void selectDevice(const std::string& devName);
+    void selectDevice(const std::string_view devName);
     void autoSelectDevice();
 
     void configure(int snaplen, bool promisc, int timeoutMs);
     void activate();
-
-    void open();
-    void close();
 
     std::string getSelectedDevice() const;
     std::string getIPv4() const;
     std::string getMask() const;
     std::vector<std::string> listAllDevices() const;
 
-    void setFilter(const std::string& expr);
-    void startCapture();
-    void stopCapture();
+    void setFilter(const std::string_view expr);
+    std::string next_packet();
 
 private:
     void extractIPv4Data();
@@ -46,10 +42,6 @@ private:
     std::string mask;
 
     char errbuf[PCAP_ERRBUF_SIZE];
-
-    int snaplen;
-    bool promisc;
-    int timeoutMs;
 };
 
 #endif
