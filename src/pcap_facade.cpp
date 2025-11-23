@@ -36,7 +36,7 @@ void PcapFacade::autoSelectDevice()
 }
 
 void PcapFacade::configure(int snaplen, bool promisc, int timeoutMs)
-{   
+{
     if (selectedDevName.empty())
         throw std::runtime_error("configure(): device not selected");
 
@@ -65,7 +65,7 @@ void PcapFacade::activate()
     if (code < 0)
     {
         if (code == PCAP_ERROR_PERM_DENIED)
-            throw std::runtime_error("activate(): permission denied, try running as root");    
+            throw std::runtime_error("activate(): permission denied, try running as root");
         pcap_close(handle);
         handle = nullptr;
         throw std::runtime_error("activate(): pcap_activate error");
@@ -78,44 +78,46 @@ std::string PcapFacade::getIPv4() const { return ipv4; }
 
 std::string PcapFacade::getMask() const { return mask; }
 
-std::vector<std::string> PcapFacade::listAllDevices() const
+[[nodiscard]] std::vector<std::string> PcapFacade::listAllDevices() const
 {
-    std::vector<std::string> result {};
-
+    std::vector<std::string> result{};
     for (auto d = allDevs; d != nullptr; d = d->next)
-    {
         result.push_back(d->name);
-    }
-    
+
     return result;
 }
 
-void PcapFacade::setFilter(const std::string_view expr)
+EtherFrame PcapFacade::next_frame()
 {
-
-}
-
-std::string PcapFacade::next_packet()
-{
-    pcap_pkthdr* hdr;
-    const u_char* bytes;
+    pcap_pkthdr *hdr;
+    const u_char *bytes;
 
     int code = pcap_next_ex(handle, &hdr, &bytes);
-    
-    if (code == 1) 
-    {
-        return "packet: len=" + std::to_string(hdr->len) +
-               " caplen=" + std::to_string(hdr->caplen) +
-               " ts=" + std::to_string(hdr->ts.tv_sec);
-    }
-    else if (code == 0)
-        return "timeout";
-    else if (code == -1)
-        throw std::runtime_error("pcap_next_ex error");
-    else if (code == -2)
-        return "eof";
 
-    return "unknown";
+    struct ether_header* eptr;
+    eptr = (struct ether_header*) bytes;
+
+    EtherFrame frame;
+    memcpy(frame.source, eptr->ether_shost, 6);
+    memcpy(frame.destination, eptr->ether_dhost, 6);
+    frame.type = ntohs(eptr->ether_type);
+
+    return frame;
+}
+
+IpHeader PcapFacade::next_packet()
+{
+    IpHeader ip{};
+    pcap_pkthdr *hdr;
+    const u_char *bytes;
+
+    int code = pcap_next_ex(handle, &hdr, &bytes);
+
+    const u_char* ip_start = bytes + sizeof(struct ether_header);
+
+    std::memcpy(&ip, ip_start, sizeof(IpHeader));
+
+    return ip;
 }
 
 void PcapFacade::extractIPv4Data()
