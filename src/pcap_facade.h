@@ -1,13 +1,12 @@
 #ifndef PCAP_FACADE_H
 #define PCAP_FACADE_H
 
-#include "ether_frame.h"
-#include "ip_header.h"
-#include "arp_header.h"
+#include "net_headers/ether_frame.h"
+#include "net_headers/ip_header.h"
+#include "net_headers/arp_header.h"
 #include <vector>
 #include <array>
 #include <string>
-#include <variant>
 #include <stdexcept>
 #include <pcap.h>
 #include <cstring>

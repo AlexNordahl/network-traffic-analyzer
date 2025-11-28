@@ -117,12 +117,16 @@ std::pair<EtherFrame, const u_char*> PcapFacade::next()
     pcap_pkthdr *hdr;
     const u_char *bytes;
 
-    pcap_next_ex(handle, &hdr, &bytes);
+    int res = pcap_next_ex(handle, &hdr, &bytes);
+
+    if (res <= 0)
+        return {};
 
     struct ether_header* eptr;
     eptr = (struct ether_header*) bytes;
 
     EtherFrame frame;
+    frame.payloadLen = hdr->caplen - sizeof(ether_header);;
     memcpy(frame.source, eptr->ether_shost, 6);
     memcpy(frame.destination, eptr->ether_dhost, 6);
     frame.type = ntohs(eptr->ether_type);

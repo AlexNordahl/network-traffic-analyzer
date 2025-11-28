@@ -10,6 +10,7 @@ struct EtherFrame
     uint8_t destination[6];
     uint8_t source[6];
     uint16_t type;
+    int payloadLen;
 
     std::string destStr() const { return ether_ntoa((const struct ether_addr *)&destination); };
     std::string sourceStr() const { return ether_ntoa((const struct ether_addr *)&source); };
@@ -24,6 +25,8 @@ struct EtherFrame
         default: return "?";
         }
     }
+
+    int getPayloadLen() const { return payloadLen; };
 };
 
 #endif
