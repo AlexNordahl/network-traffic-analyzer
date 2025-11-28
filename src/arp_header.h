@@ -5,16 +5,16 @@
 #include <arpa/inet.h>
 #include <netinet/ether.h>
 
-struct ArpHeader 
+struct __attribute__((packed)) ArpHeader 
 {
     uint16_t htype;
     uint16_t ptype;
-    uint8_t hlen;
-    uint8_t plen;
+    uint8_t  hlen;
+    uint8_t  plen;
     uint16_t oper;
-    uint8_t source_mac[6];
+    uint8_t  source_mac[6];
     uint32_t source_ip;
-    uint8_t target_mac[6];
+    uint8_t  target_mac[6];
     uint32_t target_ip;
 
     std::string sourceMacStr() const { return ether_ntoa((const struct ether_addr *)&source_mac); }
