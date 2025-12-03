@@ -4,6 +4,7 @@
 #include "net_headers/ether_frame.h"
 #include "net_headers/ip_header.h"
 #include "net_headers/arp_header.h"
+#include "net_headers/tcp_header.h"
 #include <vector>
 #include <array>
 #include <string>
@@ -36,7 +37,8 @@ public:
     int maskToCIDR(const std::string& mask) const;
 
     std::pair<EtherFrame, const u_char*> next();
-    IpHeader parseIPV4(const u_char* payload);
+    std::pair<IpHeader, const u_char*> parseIPV4(const u_char* payload);
+    TcpHeader parseTCP(const u_char* data);
     ArpHeader parseARP(const u_char* payload);
 
 private:

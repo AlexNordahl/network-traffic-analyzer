@@ -136,14 +136,36 @@ std::pair<EtherFrame, const u_char*> PcapFacade::next()
     return {frame, payload};
 }
 
-IpHeader PcapFacade::parseIPV4(const u_char *payload)
+std::pair<IpHeader, const u_char*> PcapFacade::parseIPV4(const u_char* payload)
 {
     IpHeader ip{};
     std::memcpy(&ip, payload, sizeof(IpHeader));
-    return ip;
+
+    uint8_t ihl = ip.ver_ihl & 0x0F;
+    size_t headerLength = ihl * 4;
+
+    const u_char* data = payload + headerLength;
+
+    return {ip, data};
 }
 
-ArpHeader PcapFacade::parseARP(const u_char *payload)
+TcpHeader PcapFacade::parseTCP(const u_char* data)
+{
+    TcpHeader tcp {};
+    std::memcpy(&tcp, data, sizeof(tcp));
+
+    tcp.srcPort = ntohs(tcp.srcPort);
+    tcp.dstPort = ntohs(tcp.dstPort);
+    tcp.seqNumber = ntohl(tcp.seqNumber);
+    tcp.ackNumber = ntohl(tcp.ackNumber);
+    tcp.windowSize = ntohs(tcp.windowSize);
+    tcp.checksum = ntohs(tcp.checksum);
+    tcp.urg_pointer= ntohs(tcp.urg_pointer);
+
+    return tcp;
+}
+
+ArpHeader PcapFacade::parseARP(const u_char* payload)
 {
     ArpHeader arp{};
     memcpy(&arp, payload, sizeof(ArpHeader));
