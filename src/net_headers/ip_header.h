@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <netinet/ether.h>
 
-struct __attribute__((packed))  IpHeader
+struct __attribute__((packed)) IpHeader
 {
     uint8_t ver_ihl;
     uint8_t tos;
