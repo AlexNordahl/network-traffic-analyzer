@@ -21,22 +21,36 @@ int main()
         printEthernetFrame(frame);
         if (frame.type == ETHERTYPE_IP)
         {
-            const auto [header, data] = pf.parseIPV4(payload);
+            const auto [header, ipData] = pf.parseIPV4(payload);
             printIPV4(header);
 
             switch (header.protocol)
             {
                 case IPPROTO_TCP:
                 {
-                    const auto segment = pf.parseTCP(data);
-                    printTCP(segment);
+                    const auto [header, tcpData] = pf.parseTCP(ipData);
+                    printTCP(header);
                     break;
                 }
 
                 case IPPROTO_UDP:
                 {
-                    const auto segment = pf.parseUDP(data);
-                    printUDP(segment);
+                    const auto [header, udpData, dataLen] = pf.parseUDP(ipData);
+                    printUDP(header);
+
+                    if (header.destPort() == 53)
+                    {
+                        const auto dns = pf.parseDNS(udpData);
+                        printDNS(dns);
+                    }
+
+                    break;
+                }
+
+                case IPPROTO_ICMP:
+                {
+                    const auto header = pf.parseICMP(ipData);
+                    printICMP(header);
                     break;
                 }
 
