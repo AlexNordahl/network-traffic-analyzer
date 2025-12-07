@@ -149,26 +149,31 @@ std::pair<IpHeader, const u_char*> PcapFacade::parseIPV4(const u_char* payload)
     return {ip, data};
 }
 
-TcpHeader PcapFacade::parseTCP(const u_char* data)
+std::pair<TcpHeader, const u_char*> PcapFacade::parseTCP(const u_char* data)
 {
     TcpHeader tcp {};
-    std::memcpy(&tcp, data, 20);
+    std::memcpy(&tcp, data, sizeof(TcpHeader));
 
-    return tcp;
+    data = data + tcp.headerLengthBytes();
+
+    return {tcp, data};
 }
 
-UdpHeader PcapFacade::parseUDP(const u_char *data)
+PcapFacade::ParsedUDP PcapFacade::parseUDP(const u_char *data)
 {
     UdpHeader udp {};
-    std::memcpy(&udp, data, sizeof(udp));
+    std::memcpy(&udp, data, sizeof(UdpHeader));
 
-    return udp;
+    data = data + sizeof(udp);
+    int length = udp.length() - static_cast<int>(sizeof(udp));
+
+    return {udp, data, length};
 }
 
 IcmpHeader PcapFacade::parseICMP(const u_char *data)
 {
     IcmpHeader icmp {};
-    std::memcpy(&icmp, data, sizeof(icmp));
+    std::memcpy(&icmp, data, sizeof(IcmpHeader));
 
     return icmp;
 }
@@ -179,6 +184,14 @@ ArpHeader PcapFacade::parseARP(const u_char* payload)
     memcpy(&arp, payload, sizeof(ArpHeader));
 
     return arp;
+}
+
+DnsHeader PcapFacade::parseDNS(const u_char *data)
+{
+    DnsHeader dns {};
+    std::memcpy(&dns, data, sizeof(DnsHeader));
+
+    return dns;
 }
 
 void PcapFacade::extractIPv4Data()
