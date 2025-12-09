@@ -17,6 +17,12 @@ struct __attribute__((packed)) ArpHeader
     uint8_t  target_mac[6];
     uint32_t target_ip;
 
+    int hardwareType() const { return ntohs(htype); };
+    int protocolType() const { return ntohs(ptype); };
+    int hardwareLength() const { return hlen; };
+    int protocolLength() const { return plen; };
+    int operation() const { return ntohs(oper); };
+
     std::string sourceMacStr() const { return ether_ntoa((const struct ether_addr *)&source_mac); }
     std::string sourceIpStr() const
     {
