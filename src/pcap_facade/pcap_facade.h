@@ -18,13 +18,6 @@
 class PcapFacade
 {
 public:
-    struct ParsedUDP
-    {
-        UdpHeader header;
-        const u_char* data;
-        const int dataLen;
-    };
-
     PcapFacade();
     ~PcapFacade();
 
