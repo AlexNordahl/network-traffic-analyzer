@@ -6,6 +6,8 @@
 #include <array>
 #include <string>
 #include <stdexcept>
+#include <string_view>
+#include <utility>
 #include <pcap.h>
 #include <cstring>
 #include <sys/socket.h>
@@ -20,6 +22,12 @@ class PcapFacade
 public:
     PcapFacade();
     ~PcapFacade();
+
+    PcapFacade(const PcapFacade&) = delete;   
+    PcapFacade& operator=(const PcapFacade&) = delete;
+
+    PcapFacade(PcapFacade&&) = delete;   
+    PcapFacade& operator=(PcapFacade&&) = delete;
 
     void selectDevice(const std::string_view devName);
     void autoSelectDevice();
