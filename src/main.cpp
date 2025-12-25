@@ -68,6 +68,11 @@ void parseAndPrintFrame(const EtherFrame& frame, const u_char* payload, const Pr
         const auto [header, ipData] = parseIPV4(payload);
         pr.printIPV4(header);
 
+        if (header.fragOffset() > 0)
+        {
+            return;
+        }
+
         switch (header.protocol)
         {
             case IPPROTO_TCP:
