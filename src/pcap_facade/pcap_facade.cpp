@@ -109,7 +109,7 @@ std::pair<EtherFrame, const u_char*> PcapFacade::next()
 
     int res = pcap_next_ex(handle, &hdr, &bytes);
 
-    if (res <= 0)
+    if (res < 0)
         throw std::runtime_error("next(): pcap_next_ex error");
 
     struct ether_header* eptr;
