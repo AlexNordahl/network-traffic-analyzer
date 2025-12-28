@@ -1,6 +1,22 @@
 #include "arguments_handler.h"
 
-std::optional<std::string> selectDeviceArgument(int argc, char const *argv[])
+void validateArgv(int argc, const char *argv[])
+{
+    std::array<std::string_view, 6> validArgs {"-d", "-l", "-f", "--device", "--list", "--filter"};
+
+    for (int i = 0; i < argc; ++i)
+    {
+        if (argv[i][0] == '-')
+        {
+            if (std::find(validArgs.begin(), validArgs.end(), argv[i]) == validArgs.end())
+            {
+                throw std::logic_error("unknown flag, try using -d, -l, -f, --device, --list, --filter");
+            }
+        }
+    }
+}
+
+std::optional<std::string> selectDeviceArgument(int argc, const char* argv[])
 {
     if (argc == 1)
         return std::nullopt;
@@ -16,7 +32,8 @@ std::optional<std::string> selectDeviceArgument(int argc, char const *argv[])
     return std::nullopt;
 }
 
-bool listDevicesArgument(int argc, char const *argv[])
+
+bool listDevicesArgument(int argc, const char *argv[])
 {
     if (argc == 1)
     return false;
@@ -32,7 +49,7 @@ bool listDevicesArgument(int argc, char const *argv[])
     return false;
 }
 
-std::optional<std::string> filterArgument(int argc, char const *argv[])
+std::optional<std::string> filterArgument(int argc, const char* argv[])
 {
     if (argc == 1)
         return std::nullopt;

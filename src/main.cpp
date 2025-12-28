@@ -16,6 +16,8 @@ int main(int argc, char const* argv[])
 {
     PcapFacade pf;
 
+    validateArgv(argc, argv);
+
     auto device = selectDeviceArgument(argc, argv);
     if (device.has_value())
     {
@@ -37,8 +39,7 @@ int main(int argc, char const* argv[])
             std::cout << dev << "\n";
     }
 
-    auto filter = filterArgument(argc, argv);
-    if (filter.has_value())
+    if (auto filter = filterArgument(argc, argv); filter.has_value())
     {
         pf.setFilter(filter.value().c_str());
     }
