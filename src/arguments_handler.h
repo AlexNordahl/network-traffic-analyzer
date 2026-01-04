@@ -1,6 +1,10 @@
 #ifndef ARGUMENTS_HANDLER_H
 #define ARGUMENTS_HANDLER_H
 
+#include "pcap_facade/pcap_facade.h"
+#include "printer/console_printer.h"
+#include "printer/file_printer.h"
+#include "helpers/parsers.h"
 #include <string>
 #include <optional>
 #include <cstring>
@@ -14,5 +18,6 @@ void validateArgv(int argc, const char* argv[]);
 bool listDevicesArgument(int argc, const char* argv[]);
 std::optional<std::string> selectDeviceArgument(int argc, const char* argv[]);
 std::optional<std::string> filterArgument(int argc, const char* argv[]);
+void parseAndPrint(const EtherFrame& frame, const u_char* payload, const Printer& pr);
 
 #endif
