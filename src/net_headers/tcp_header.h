@@ -17,7 +17,7 @@ struct __attribute__((packed)) TcpHeader
 
     uint16_t windowSize;
     uint16_t checksum;
-    uint16_t urg_pointer;
+    uint16_t urgPointer;
 
     int sourcePort() const { return ntohs(srcPort); }
     int destPort() const { return ntohs(dstPort); }
@@ -37,7 +37,7 @@ struct __attribute__((packed)) TcpHeader
     bool flag_CWR() const { return flags & 0x80; }
 
     int window() const { return ntohs(windowSize); }
-    int urgPtr() const { return ntohs(urg_pointer); }
+    int urgPtr() const { return ntohs(urgPointer); }
     int getChecksum() const { return ntohs(checksum); }
 };
 
