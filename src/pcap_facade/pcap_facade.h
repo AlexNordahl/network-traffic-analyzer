@@ -1,21 +1,23 @@
 #ifndef PCAP_FACADE_H
 #define PCAP_FACADE_H
 
-#include "../net_headers/all_net_headers.h"
-#include <vector>
-#include <array>
-#include <string>
-#include <stdexcept>
-#include <string_view>
-#include <utility>
-#include <pcap.h>
-#include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netinet/if_ether.h>
 #include <net/ethernet.h>
 #include <netinet/ether.h>
+#include <netinet/if_ether.h>
+#include <netinet/in.h>
+#include <pcap.h>
+#include <sys/socket.h>
+
+#include <array>
+#include <cstring>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+#include "../net_headers/all_net_headers.h"
 
 class PcapFacade
 {
@@ -23,10 +25,10 @@ public:
     PcapFacade();
     ~PcapFacade();
 
-    PcapFacade(const PcapFacade&) = delete;   
+    PcapFacade(const PcapFacade&) = delete;
     PcapFacade& operator=(const PcapFacade&) = delete;
 
-    PcapFacade(PcapFacade&&) = delete;   
+    PcapFacade(PcapFacade&&) = delete;
     PcapFacade& operator=(PcapFacade&&) = delete;
 
     void selectDevice(const std::string_view devName);
@@ -41,7 +43,7 @@ public:
     std::vector<std::string> listAllDevices() const;
     void setFilter(std::string text, const bool optimize = false);
 
-    std::pair<EtherFrame, const u_char* > next();
+    std::pair<EtherFrame, const u_char*> next();
 
 private:
     void extractIPv4Data();

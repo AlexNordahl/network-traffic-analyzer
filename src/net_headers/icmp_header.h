@@ -1,9 +1,10 @@
 #ifndef ICMP_HEADER_H
 #define ICMP_HEADER_H
 
-#include <string>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include <string>
 
 struct __attribute__((packed)) IcmpHeader
 {

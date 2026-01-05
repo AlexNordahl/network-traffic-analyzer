@@ -1,15 +1,11 @@
 #include "pcap_facade.h"
 
-PcapFacade::PcapFacade()
-{
-    pcap_findalldevs(&allDevs, errbuf);
-}
+PcapFacade::PcapFacade() { pcap_findalldevs(&allDevs, errbuf); }
 
 PcapFacade::~PcapFacade()
 {
     pcap_freealldevs(allDevs);
-    if (handle != nullptr)
-        pcap_close(handle);
+    if (handle != nullptr) pcap_close(handle);
     pcap_freecode(&fp);
 }
 
@@ -59,14 +55,16 @@ void PcapFacade::configure(int snaplen, bool promisc, int timeoutMs)
 void PcapFacade::activate()
 {
     if (handle == nullptr)
-        throw std::runtime_error("activate(): handle is null, configure probably not set");
+        throw std::runtime_error(
+            "activate(): handle is null, configure probably not set");
 
     int code = pcap_activate(handle);
 
     if (code < 0)
     {
         if (code == PCAP_ERROR_PERM_DENIED)
-            throw std::runtime_error("activate(): permission denied, try running as root");
+            throw std::runtime_error(
+                "activate(): permission denied, try running as root");
         pcap_close(handle);
         handle = nullptr;
         throw std::runtime_error("activate(): pcap_activate error");
@@ -82,20 +80,19 @@ std::string PcapFacade::getMask() const { return mask; }
 [[nodiscard]] std::vector<std::string> PcapFacade::listAllDevices() const
 {
     std::vector<std::string> result{};
-    for (auto d = allDevs; d != nullptr; d = d->next)
-        result.push_back(d->name);
+    for (auto d = allDevs; d != nullptr; d = d->next) result.push_back(d->name);
 
     return result;
 }
 
 void PcapFacade::setFilter(std::string text, const bool optimize)
 {
-    if (pcap_compile(handle, &fp, text.c_str(), optimize, maskp) < 0) 
+    if (pcap_compile(handle, &fp, text.c_str(), optimize, maskp) < 0)
     {
         throw std::runtime_error("setFilter(): pcap_compile error");
     }
 
-    if (pcap_setfilter(handle, &fp) < 0) 
+    if (pcap_setfilter(handle, &fp) < 0)
     {
         pcap_freecode(&fp);
         throw std::runtime_error("setFilter(): pcap_setFilter error");
@@ -104,23 +101,22 @@ void PcapFacade::setFilter(std::string text, const bool optimize)
 
 std::pair<EtherFrame, const u_char*> PcapFacade::next()
 {
-    pcap_pkthdr *hdr;
-    const u_char *bytes;
+    pcap_pkthdr* hdr;
+    const u_char* bytes;
 
     int res = pcap_next_ex(handle, &hdr, &bytes);
 
-    if (res < 0)
-        throw std::runtime_error("next(): pcap_next_ex error");
+    if (res < 0) throw std::runtime_error("next(): pcap_next_ex error");
 
     struct ether_header* eptr;
-    eptr = (struct ether_header*) bytes;
+    eptr = (struct ether_header*)bytes;
 
     EtherFrame frame;
     frame.payloadLen = static_cast<int>(hdr->caplen - sizeof(ether_header));
 
     memcpy(frame.source, eptr->ether_shost, 6);
     memcpy(frame.destination, eptr->ether_dhost, 6);
-    
+
     frame.type = ntohs(eptr->ether_type);
 
     const u_char* payload = bytes + sizeof(ether_header);

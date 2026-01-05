@@ -24,7 +24,7 @@ std::pair<TcpHeader, const u_char*> parseTCP(const u_char* data)
     return {tcp, data};
 }
 
-ParsedUDP parseUDP(const u_char *data)
+ParsedUDP parseUDP(const u_char* data)
 {
     UdpHeader udp;
     std::memcpy(&udp, data, sizeof(UdpHeader));
@@ -35,7 +35,7 @@ ParsedUDP parseUDP(const u_char *data)
     return {udp, data, length};
 }
 
-IcmpHeader parseICMP(const u_char *data)
+IcmpHeader parseICMP(const u_char* data)
 {
     IcmpHeader icmp;
     std::memcpy(&icmp, data, sizeof(IcmpHeader));
@@ -51,7 +51,7 @@ ArpHeader parseARP(const u_char* data)
     return arp;
 }
 
-DnsHeader parseDNS(const u_char *data)
+DnsHeader parseDNS(const u_char* data)
 {
     DnsHeader dns;
     std::memcpy(&dns, data, sizeof(DnsHeader));

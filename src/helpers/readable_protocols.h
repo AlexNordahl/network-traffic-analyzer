@@ -1,11 +1,12 @@
 #ifndef READABLE_PROTOCOLS_H
 #define READABLE_PROTOCOLS_H
 
+#include <arpa/inet.h>
+
+#include <array>
+#include <bitset>
 #include <string>
 #include <vector>
-#include <bitset>
-#include <array>
-#include <arpa/inet.h>
 
 std::string protocolKeyword(const int decimal);
 std::string arpOperation(const int decimal);

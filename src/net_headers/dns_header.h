@@ -1,9 +1,10 @@
 #ifndef DNS_HEADER_H
 #define DNS_HEADER_H
 
-#include <string>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include <string>
 
 struct DnsHeader
 {

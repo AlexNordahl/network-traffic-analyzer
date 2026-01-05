@@ -1,8 +1,9 @@
 #ifndef FILE_PRINTER_H
 #define FILE_PRINTER_H
 
-#include "printer.h"
 #include <iostream>
+
+#include "printer.h"
 
 class FilePrinter : public Printer
 {
@@ -14,6 +15,7 @@ public:
     void printUDP(const UdpHeader& header) const override;
     void printICMP(const IcmpHeader& header) const override;
     void printDNS(const DnsHeader& header) const override;
+
 private:
 };
 

@@ -1,9 +1,10 @@
 #ifndef TCP_HEADER
 #define TCP_HEADER
 
-#include <string>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include <string>
 
 struct __attribute__((packed)) TcpHeader
 {
@@ -40,6 +41,5 @@ struct __attribute__((packed)) TcpHeader
     int urgPtr() const { return ntohs(urgPointer); }
     int getChecksum() const { return ntohs(checksum); }
 };
-
 
 #endif

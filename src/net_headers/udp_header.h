@@ -1,9 +1,10 @@
 #ifndef UDP_HEADER_H
 #define UDP_HEADER_H
 
-#include <string>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include <string>
 
 struct __attribute__((packed)) UdpHeader
 {

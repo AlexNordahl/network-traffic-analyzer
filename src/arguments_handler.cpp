@@ -1,16 +1,20 @@
 #include "arguments_handler.h"
 
-void validateArgv(int argc, const char *argv[])
+void validateArgv(int argc, const char* argv[])
 {
-    std::array<std::string_view, 6> validArgs {"-d", "-l", "-f", "--device", "--list", "--filter"};
+    std::array<std::string_view, 6> validArgs{"-d",       "-l",     "-f",
+                                              "--device", "--list", "--filter"};
 
     for (int i = 0; i < argc; ++i)
     {
         if (argv[i][0] == '-')
         {
-            if (std::find(validArgs.begin(), validArgs.end(), argv[i]) == validArgs.end())
+            if (std::find(validArgs.begin(), validArgs.end(), argv[i]) ==
+                validArgs.end())
             {
-                throw std::logic_error("unknown flag, try using -d, -l, -f, --device, --list, --filter");
+                throw std::logic_error(
+                    "unknown flag, try using -d, -l, -f, --device, --list, "
+                    "--filter");
             }
         }
     }
@@ -18,8 +22,7 @@ void validateArgv(int argc, const char *argv[])
 
 std::optional<std::string> selectDeviceArgument(int argc, const char* argv[])
 {
-    if (argc == 1)
-        return std::nullopt;
+    if (argc == 1) return std::nullopt;
 
     for (int i = 1; i < argc; i++)
     {
@@ -32,12 +35,10 @@ std::optional<std::string> selectDeviceArgument(int argc, const char* argv[])
     return std::nullopt;
 }
 
-
-bool listDevicesArgument(int argc, const char *argv[])
+bool listDevicesArgument(int argc, const char* argv[])
 {
-    if (argc == 1)
-    return false;
-    
+    if (argc == 1) return false;
+
     for (int i = 1; i < argc; i++)
     {
         if (strcmp(argv[i], "-l") == 0 or strcmp(argv[i], "--list") == 0)
@@ -45,14 +46,13 @@ bool listDevicesArgument(int argc, const char *argv[])
             return true;
         }
     }
-    
+
     return false;
 }
 
 std::optional<std::string> filterArgument(int argc, const char* argv[])
 {
-    if (argc == 1)
-        return std::nullopt;
+    if (argc == 1) return std::nullopt;
 
     for (int i = 1; i < argc; i++)
     {
@@ -65,10 +65,11 @@ std::optional<std::string> filterArgument(int argc, const char* argv[])
     return std::nullopt;
 }
 
-void parseAndPrint(const EtherFrame& frame, const u_char* payload, const Printer& pr)
+void parseAndPrint(const EtherFrame& frame, const u_char* payload,
+                   const Printer& pr)
 {
     pr.printEthernet(frame);
-    
+
     if (frame.type == ETHERTYPE_ARP)
     {
         auto arpHeader = parseARP(payload);
@@ -111,7 +112,8 @@ void parseAndPrint(const EtherFrame& frame, const u_char* payload, const Printer
                 break;
             }
 
-            default: break;
+            default:
+                break;
         }
     }
 }

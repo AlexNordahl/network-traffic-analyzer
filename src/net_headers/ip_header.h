@@ -1,9 +1,10 @@
 #ifndef IP_HEADER
 #define IP_HEADER
 
-#include <string>
 #include <arpa/inet.h>
 #include <netinet/ether.h>
+
+#include <string>
 
 struct __attribute__((packed)) IpHeader
 {
@@ -32,7 +33,7 @@ struct __attribute__((packed)) IpHeader
 
     int getTTL() const { return ttl; }
     int getProtocol() const { return protocol; }
-    
+
     uint16_t getChecksum() const { return ntohs(checksum); }
 
     std::string srcStr() const
